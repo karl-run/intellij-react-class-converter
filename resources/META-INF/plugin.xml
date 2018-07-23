@@ -1,0 +1,35 @@
+<idea-plugin>
+    <id>ReactStateLessToClass</id>
+    <name>React Stateless to Class Converter</name>
+    <version>1.0</version>
+    <vendor email="karl@karl.run" url="https://karl.run">karl.run</vendor>
+
+    <description><![CDATA[
+        Simple plugin to convert from stateless React components to class-based React components.
+    ]]></description>
+
+    <change-notes><![CDATA[
+        1.0: TODO
+    ]]>
+    </change-notes>
+
+    <idea-version since-build="173.0"/>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <intentionAction>
+            <className>run.karl.reactconvert.ReactStatelessToClass</className>
+            <category>JavaScript/ECMAScript 6</category>
+            <descriptionDirectoryName>ReactStatelessToStateful</descriptionDirectoryName>
+
+        </intentionAction>
+    </extensions>
+
+    <project-components>
+        <component>
+            <implementation-class>run.karl.reactconvert.ReactStatelessToClass</implementation-class>
+        </component>
+    </project-components>
+    <actions>
+    </actions>
+
+</idea-plugin>
