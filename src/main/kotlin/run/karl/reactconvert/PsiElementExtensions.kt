@@ -22,6 +22,10 @@ fun PsiElement.walkToParent(): PsiElement {
 
 fun PsiElement.type(): IElementType = node.elementType
 
-infix fun PsiElement.of(type: JSTypes): Boolean {
-    return this.type().toString() == type.type;
+fun PsiElement.findType(type: JSTypes): PsiElement? {
+    return this.children.find {
+        it of type
+    }
 }
+
+infix fun PsiElement.of(type: JSTypes): Boolean = this.type().toString() == type.type

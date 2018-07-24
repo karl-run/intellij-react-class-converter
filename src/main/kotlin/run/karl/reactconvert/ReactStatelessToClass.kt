@@ -6,6 +6,43 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import run.karl.reactconvert.JSTypes.*
 
+data class Convert(
+        var params: PsiElement? = null,
+        var returnValue: PsiElement? = null
+)
+
+fun makeClass(className: String, params: String?, returnBlock: String?): String {
+    return """
+    class ${className} extends React.Component {
+        render() {
+            const ${params} = this.props;
+
+            return ${returnBlock}
+        }
+    }
+    """.trimIndent()
+}
+
+fun makeRender(returnValue: String?, params: String?): String {
+    return """
+        render() {
+            ${makeReturnValue(params)}
+            console.log("Wahoo");
+        }
+    """.trimIndent()
+}
+
+fun makeReturnValue(params: String?): String {
+    if (params == null) return ""
+
+    return """
+        const {${params
+            .removeSurrounding("(", ")")
+            .removeSurrounding("{", "}")
+    }} = this.props;
+    """.trimIndent()
+}
+
 internal class ReactStatelessToClass : PsiElementBaseIntentionAction() {
     override fun isAvailable(project: Project, editor: Editor?, element: PsiElement): Boolean {
         return isCorrectLanguage(element.language.id) && element of ARROW_FUNCTION
@@ -13,25 +50,43 @@ internal class ReactStatelessToClass : PsiElementBaseIntentionAction() {
 
     override fun invoke(project: Project, editor: Editor?, element: PsiElement) {
         val parent = element.walkToParent()
-        println("Hey bois" + parent)
         var node: PsiElement? = element
-        while (true) {
-            node = node?.prevSibling
+        val sections = Convert()
+        val extractUsefulSection: (PsiElement) -> Unit = {
+            println(it)
+            println(it.type())
+            println(it.text)
+            println()
+            when {
+                it of PARAM_LIST -> sections.params = it
+                it of BLOCK -> sections.returnValue = it
+                it of JSX -> sections.returnValue = it
+            }
+        }
+        while (node != null) {
+            node = node.prevSibling
             if (node == null) {
                 break
             }
 
-            println(node.type())
-
-            when {
-                node of ARROW_FUNCTION -> println("Hey is arrow" + node.text)
-                node of ATTRIBUTE_LIST -> println("Is alist: " + node.text)
-                node of PARAM_LIST -> println("Is plist: " + node.text)
-                else -> println("Unknown thingy: " + node.text)
-            }
+            extractUsefulSection(node)
         }
-        parent.children[0].replace(project.makeNode("class Cooliosis"))
-        println("I am invoke")
+
+        node = element
+        while (node != null) {
+            node = node.nextSibling
+            if (node == null) {
+                break
+            }
+
+            extractUsefulSection(node)
+        }
+
+        try {
+            element.replace(project.makeNode(makeRender(sections.returnValue?.text, sections.params?.text)))
+        } catch (e: Exception) {
+            println(e)
+        }
     }
 
     override fun getFamilyName(): String = text
