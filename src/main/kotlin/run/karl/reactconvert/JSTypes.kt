@@ -1,0 +1,11 @@
+package run.karl.reactconvert
+
+enum class JSTypes(val type: String) {
+    SPACE("WHITE_SPACE"),
+    ARROW_FUNCTION("JS:EQGT"),
+    ATTRIBUTE_LIST("JS:ATTRIBUTE_LIST"),
+    FUNCTION_EXPRESSION("JS:FUNCTION_EXPRESSION"),
+    VARIABLE("JS:VARIABLE"),
+    JSX("JS:XML_LITERAL_EXPRESSION"),
+    PARAM_LIST("JS:PARAMETER_LIST");
+}

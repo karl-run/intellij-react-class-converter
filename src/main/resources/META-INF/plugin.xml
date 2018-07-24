@@ -20,7 +20,6 @@
             <className>run.karl.reactconvert.ReactStatelessToClass</className>
             <category>JavaScript/ECMAScript 6</category>
             <descriptionDirectoryName>ReactStatelessToStateful</descriptionDirectoryName>
-
         </intentionAction>
     </extensions>
 
